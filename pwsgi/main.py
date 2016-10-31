@@ -2,8 +2,9 @@ from argparse import ArgumentParser
 from pwsgi import __version__
 import os
 import sys
+from functools import partial
 from pulsar.apps import wsgi
-from pwsgi.wrapper import wrap2pwsgi
+from pwsgi.wrapper import wrap2pwsgi, PulsarApp
 
 parser = ArgumentParser(add_help=False, description='pWsgi - a pulsar based async wsgi implentation %s' % __version__)
 parser.usage = 'pwsgi [-h]'
@@ -15,9 +16,10 @@ os.chdir(args.work_path)
 sys.path.append('.')
 
 
-def load_wsgi(app):
-    wsgi_app = __import__(app).application
-    return wrap2pwsgi(wsgi_app)
+def load_wsgi(application):
+    wsgi_app = __import__(application).application
+    PulsarApp.__metaclass__ = partial(wrap2pwsgi, wsgi_app)
+    return PulsarApp()
 
 
 def main(**kwargs):
@@ -26,7 +28,8 @@ def main(**kwargs):
         print('-----------------------------')
     sys.argv = [sys.argv[0]] + tails
     if args.app:
-        return wsgi.WSGIServer(load_wsgi(args.app)(), **kwargs).start()
+        pwsgi_app = load_wsgi(args.app)
+        return wsgi.WSGIServer(pwsgi_app).start()
 
 
 if __name__ == '__main__':
