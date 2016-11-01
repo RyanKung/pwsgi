@@ -17,7 +17,8 @@ sys.path.append('.')
 
 
 def load_wsgi(application):
-    wsgi_app = __import__(application).application
+    module = __import__(application)
+    wsgi_app = getattr(module, 'application', None) or getattr(module, 'app', None)
     PulsarApp.__metaclass__ = partial(wrap2pwsgi, wsgi_app)
     return PulsarApp()
 
