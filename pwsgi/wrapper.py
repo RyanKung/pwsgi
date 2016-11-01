@@ -1,20 +1,24 @@
+import os
 from pulsar.apps import wsgi
 
-__all__ = ['wrap2pwsgi', 'PulsarApp']
+__all__ = ['WsgiMeta', 'PulsarApp']
 
 
-class PulsarApp(wsgi.LazyWsgi):
-    pass
+class WsgiMeta(type):
+    def __call__(cls, *args, **kwargs):
+        return super(WsgiMeta, cls).__call__(*args, **kwargs)
 
 
-def wrap2pwsgi(application):
-    '''
-    Wrap a wsgi app to pwsgi app
-    '''
-    def setup_fn(application):
-        def setup(self, environ=None):
-            app = application
-            return wsgi.WsgiHandler((wsgi.wait_for_body_middleware,
-                                     wsgi.middleware_in_executor(app)))
-        return
-    return type('PulsarApp', (wsgi.LazyWsgi, ), {'setup': setup_fn(application)})
+class PulsarApp(wsgi.LazyWsgi, metaclass=WsgiMeta):
+    def __init__(self, app=None):
+        self.application = app
+        return super(PulsarApp, self).__init__()
+
+    def getapp(self):
+        module = __import__(self.application)
+        return getattr(module, 'application', None) or getattr(module, 'app', None)
+
+    def setup(self, environ=os.environ):
+        app = self.getapp()
+        return wsgi.WsgiHandler((wsgi.wait_for_body_middleware,
+                                 wsgi.middleware_in_executor(app)))

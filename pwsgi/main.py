@@ -2,9 +2,8 @@ from argparse import ArgumentParser
 from pwsgi import __version__
 import os
 import sys
-from functools import partial
 from pulsar.apps import wsgi
-from pwsgi.wrapper import wrap2pwsgi, PulsarApp
+from pwsgi.wrapper import PulsarApp
 
 parser = ArgumentParser(add_help=False, description='pWsgi - a pulsar based async wsgi implentation %s' % __version__)
 parser.usage = 'pwsgi [-h]'
@@ -17,10 +16,7 @@ sys.path.append('.')
 
 
 def load_wsgi(application):
-    module = __import__(application)
-    wsgi_app = getattr(module, 'application', None) or getattr(module, 'app', None)
-    PulsarApp.__metaclass__ = partial(wrap2pwsgi, wsgi_app)
-    return PulsarApp()
+    return PulsarApp(application)
 
 
 def main(**kwargs):
