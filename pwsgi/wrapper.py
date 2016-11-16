@@ -16,7 +16,7 @@ class PulsarApp(wsgi.LazyWsgi, metaclass=WsgiMeta):
 
     def getapp(self):
         module = __import__(self.application)
-        return getattr(module, 'application', None) or getattr(module, 'app', None)
+        return getattr(module, 'application', getattr(module, 'app', None))
 
     def setup(self, environ=os.environ):
         app = self.getapp()
