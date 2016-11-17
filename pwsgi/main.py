@@ -9,14 +9,16 @@ parser = ArgumentParser(add_help=False, description='pWsgi - a pulsar based asyn
 parser.usage = 'pwsgi [-h]'
 parser.add_argument('-a', '--app', help='path of wsgi app, required')
 parser.add_argument('-w', '--work_path', help='work path of wsgi app [default: ./wsgiapp.py]', default='./')
+parser.add_argument('-m', '--middleware', help='middleware')
+
 
 args, tails = parser.parse_known_args()
 os.chdir(args.work_path)
 sys.path.append('.')
 
 
-def load_wsgi(application):
-    return PulsarApp(application)
+def load_wsgi(application, middleware=None):
+    return PulsarApp(application, middleware=middleware)
 
 
 def main(**kwargs):
@@ -25,7 +27,8 @@ def main(**kwargs):
         print('-----------------------------')
     sys.argv = [sys.argv[0]] + tails
     if args.app:
-        pwsgi_app = load_wsgi(args.app)
+        middleware = args.middleware
+        pwsgi_app = load_wsgi(args.app, middleware=middleware)
         return wsgi.WSGIServer(pwsgi_app).start()
 
 
