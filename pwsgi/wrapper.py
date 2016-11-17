@@ -27,7 +27,7 @@ class PulsarApp(wsgi.LazyWsgi, metaclass=WsgiMeta):
 
     def setup(self, environ=os.environ):
         app = self.getapp()
-        middlewares = [
+        middlewares = self.getmiddlemare() + [
             wsgi.wait_for_body_middleware,
-            wsgi.middleware_in_executor(app)] + self.getmiddlemare()
+            wsgi.middleware_in_executor(app)]
         return wsgi.WsgiHandler(tuple(middlewares))
