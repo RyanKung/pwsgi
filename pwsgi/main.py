@@ -8,7 +8,7 @@ from pwsgi.wrapper import PulsarApp
 parser = ArgumentParser(add_help=False, description='pWsgi - a pulsar based async wsgi implentation %s' % __version__)
 parser.usage = 'pwsgi [-h]'
 parser.add_argument('-a', '--app', help='path of wsgi app, required')
-parser.add_argument('-w', '--work_path', help='work path of wsgi app [default: ./wsgiapp.py]', default='./')
+parser.add_argument('-p', '--work_path', help='work path of wsgi app [default: ./wsgiapp.py]', default='./')
 parser.add_argument('-m', '--middleware', help='middleware')
 
 
