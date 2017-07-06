@@ -28,5 +28,6 @@ class BluePrint(Router):
 
     def __init__(self, *args, **kwargs) -> None:
         if not hasattr(Router, 'router'):
-            self.router = partial(router, app=self)
+            self.router = router
+            # the classmethod fn is actually `partial(self, fn)`
         super().__init__(*args, **kwargs)
