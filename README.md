@@ -113,3 +113,17 @@ optional arguments:
 Have fun!
 
 ```
+
+# Router
+
+`pwsgi` provide `flask like router`.
+
+```
+    from pwsgi import BluePrint
+
+    app = BluePrint('/')
+
+    @app.router('/hello', method='post')
+    def world(request):
+        return wsgi.WsgiResponse(200, 'world')
+```
