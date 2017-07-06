@@ -1,5 +1,4 @@
 from pulsar.apps.wsgi import Router
-from functools import partial
 
 
 __all__ = ['router']
