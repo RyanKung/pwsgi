@@ -1,3 +1,7 @@
+from pulsar.apps.wsgi import Router
+from functools import partial
+
+
 __all__ = ['router']
 
 
@@ -15,3 +19,14 @@ def router(app, rule, method):
         app.add_child(app.make_router(rule, method, fn))
         return fn
     return handler
+
+
+class BluePrint(Router):
+    '''
+    To patch pulsar.wsgi, if it dosent have `router` decorator
+    '''
+
+    def __init__(self, *args, **kwargs) -> None:
+        if not hasattr(Router, 'router'):
+            self.router = partial(router, app=self)
+        super().__init__(*args, **kwargs)
