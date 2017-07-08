@@ -123,7 +123,7 @@ Have fun!
 
     app = BluePrint('/')
 
-    @app.router('/hello', method='post')
+    @app.router('/hello', methods=['post'])
     def world(request):
         return wsgi.WsgiResponse(200, 'world')
 ```
