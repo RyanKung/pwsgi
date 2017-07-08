@@ -1,3 +1,4 @@
+from functools import partial
 from typing import Iterable
 from pulsar.apps.wsgi import Router
 
@@ -5,7 +6,7 @@ from pulsar.apps.wsgi import Router
 __all__ = ['router']
 
 
-def router(app: Router, rule: str, methods: Iterable):
+def router(wsgi: Router, rule: str, methods: Iterable):
     '''Map a function to :class:`Router` and add to the :attr:`routes` list.
     Typical usage:
 
@@ -17,7 +18,7 @@ def router(app: Router, rule: str, methods: Iterable):
     '''
     def handler(fn):
         for method in methods:
-            app.add_child(app.make_router(rule, method, fn))
+            wsgi.add_child(wsgi.make_router(rule, method.lower(), fn))
         return fn
     return handler
 
@@ -29,6 +30,6 @@ class BluePrint(Router):
 
     def __init__(self, *args, **kwargs) -> None:
         if not hasattr(Router, 'router'):
-            self.router = router
+            self.router = partial(router, self)
             # the classmethod fn is actually `partial(self, fn)`
         super().__init__(*args, **kwargs)
