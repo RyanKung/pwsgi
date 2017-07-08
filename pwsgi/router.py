@@ -1,10 +1,11 @@
+from typing import Iterable
 from pulsar.apps.wsgi import Router
 
 
 __all__ = ['router']
 
 
-def router(app, rule, methods):
+def router(app: Router, rule: str, methods: Iterable):
     '''Map a function to :class:`Router` and add to the :attr:`routes` list.
     Typical usage:
 
