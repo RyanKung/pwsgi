@@ -6,7 +6,7 @@ from pulsar.apps.wsgi import Router
 __all__ = ['router']
 
 
-def router(wsgi: Router, rule: str, methods: Iterable):
+def router(parent: Router, rule: str, methods: Iterable):
     '''Map a function to :class:`Router` and add to the :attr:`routes` list.
     Typical usage:
 
@@ -18,7 +18,8 @@ def router(wsgi: Router, rule: str, methods: Iterable):
     '''
     def handler(fn):
         for method in methods:
-            wsgi.add_child(wsgi.make_router(rule, method.lower(), fn))
+            parent.add_child(
+                parent.make_router(rule, method.lower(), fn))
         return fn
     return handler
 
