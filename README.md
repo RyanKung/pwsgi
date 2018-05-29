@@ -1,7 +1,7 @@
 # TL;DR
 
 `pWSGI` is a WSGI wrapper with `pulsar`. It can easily map a wsgi app (such as
-`Flask app` or `djang app`) to a `pulsar wsgi app` with full features supporting by `pulsar`.
+`Flask app` or `django app`) to a `pulsar wsgi app` with full features supporting by `pulsar`.
 
 # How To Use
 
